@@ -1,15 +1,3 @@
-# Windows legs
-parameters:
-  # Required: value to specify if the job is comming from an official build to run extra steps and sign binaries
-  #   Default: false
-  isOfficialBuild: false
-  # Required: value to specify if the full test matrix should be tested
-  #   Default: false
-  fullMatrix: false
-  # Optional: value to scope the tests.
-  #   Default: empty
-  testScope: ''
-
 stages:
 - stage: WindowsStage
   displayName: Windows
