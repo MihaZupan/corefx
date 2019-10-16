@@ -18,8 +18,8 @@ stages:
 
   - template: corefx-base.yml
     parameters:
-      isOfficialBuild: ${{ parameters.isOfficialBuild }}
-      testScope: ${{ parameters.testScope }}
+      isOfficialBuild: ${{ '' }}
+      testScope: ${{ 'false'}}
       targetOS: Windows_NT
       jobs:
 
@@ -29,7 +29,7 @@ stages:
         strategy:
           matrix:
             # PR CI Matrix
-            ${{ if eq(parameters.fullMatrix, 'false') }}:
+            ${{ if eq('false', 'false') }}:
               x64_Debug:
                 _BuildConfig: Debug
                 _architecture: x64
@@ -55,7 +55,7 @@ stages:
                 _helixQueues: $(uapNetfxQueues)
             
             # Full test matrix
-            ${{ if eq(parameters.fullMatrix, 'true') }}:
+            ${{ if eq('false', 'true') }}:
               x64_Release:
                 _BuildConfig: Release
                 _architecture: x64
@@ -101,10 +101,10 @@ stages:
           - nanoQueues: "`(Windows.Nano.1809.Amd64.Open`)windows.10.amd64.serverrs5.open@mcr.microsoft.com/dotnet-buildtools/prereqs:nanoserver-1809-helix-amd64-61052b7-20190723211353"
           - uapNetfxQueues: Windows.10.Amd64.ClientRS5.Open
 
-          - ${{ if eq(parameters.fullMatrix, 'false') }}:
+          - ${{ if eq('false', 'false') }}:
             - netcoreappWindowsQueues: Windows.7.Amd64.Open+Windows.81.Amd64.Open+Windows.10.Amd64.Client19H1.ES.Open
 
-          - ${{ if eq(parameters.fullMatrix, 'true') }}:
+          - ${{ if eq('false', 'true') }}:
             - netcoreappWindowsQueues: Windows.7.Amd64.Open+Windows.81.Amd64.Open+Windows.10.Amd64.ServerRS5.Open+Windows.10.Amd64.Client19H1.Open
 
       # There is no point of running legs without outerloop tests, when in an outerloop build.
@@ -114,14 +114,14 @@ stages:
           displayName: Packaging All Configurations
           strategy:
             matrix:
-              ${{ if eq(parameters.fullMatrix, 'false') }}:
+              ${{ if eq('false', 'false') }}:
                 x64_Debug:
                   _BuildConfig: Debug
                   _architecture: x64
                   _framework: allConfigurations
                   _helixQueues: $(allConfigurationsQueues)
 
-              ${{ if eq(parameters.fullMatrix, 'true') }}:
+              ${{ if eq('false', 'true') }}:
                 x64_Release:
                   _BuildConfig: Release
                   _architecture: x64
@@ -150,26 +150,3 @@ stages:
                       /p:ArchiveTests=Packages
                       $(_msbuildCommonParameters)
               displayName: Build Packages and Tests
-
-        # Legs without HELIX testing
-        - ${{ if eq(parameters.fullMatrix, 'true') }}:
-          - job: WindowsNoTest
-            displayName: Build
-            strategy:
-              matrix:
-                arm_Release:
-                  _BuildConfig: Release
-                  _architecture: arm
-                  _framework: netcoreapp
-
-                arm64_Release:
-                  _BuildConfig: Release
-                  _architecture: arm64
-                  _framework: netcoreapp
-                  _publishTests: true
-
-            pool:
-              name: Hosted VS2017
-
-            submitToHelix: false
-            buildExtraArguments: /p:RuntimeOS=win10
