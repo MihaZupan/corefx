@@ -96,7 +96,7 @@ stages:
             - netcoreappWindowsQueues: Windows.7.Amd64.Open+Windows.81.Amd64.Open+Windows.10.Amd64.ServerRS5.Open+Windows.10.Amd64.Client19H1.Open
 
       # There is no point of running legs without outerloop tests, when in an outerloop build.
-      - ${{ if and(ne(parameters.testScope, 'outerloop'), ne(parameters.testScope, 'all')) }}:
+      - ${{ if and(ne('', 'outerloop'), ne('', 'all')) }}:
         # Packaging all configurations
         - job: AllConfigurations
           displayName: Packaging All Configurations
