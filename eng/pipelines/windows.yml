@@ -6,8 +6,8 @@ stages:
 
   - template: corefx-base.yml
     parameters:
-      isOfficialBuild: ${{ '' }}
-      testScope: ${{ 'false'}}
+      isOfficialBuild: false
+      testScope: ''
       targetOS: Windows_NT
       jobs:
 
@@ -91,9 +91,6 @@ stages:
 
           - ${{ if eq('false', 'false') }}:
             - netcoreappWindowsQueues: Windows.7.Amd64.Open+Windows.81.Amd64.Open+Windows.10.Amd64.Client19H1.ES.Open
-
-          - ${{ if eq('false', 'true') }}:
-            - netcoreappWindowsQueues: Windows.7.Amd64.Open+Windows.81.Amd64.Open+Windows.10.Amd64.ServerRS5.Open+Windows.10.Amd64.Client19H1.Open
 
       # There is no point of running legs without outerloop tests, when in an outerloop build.
       - ${{ if and(ne('', 'outerloop'), ne('', 'all')) }}:
